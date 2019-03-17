@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController(MemorySuggestions.MEMORY_SUGGESTIONS_SERVISE_PATH)
-public class MemorySuggestions {
+@RestController(MemorySuggestionsController.MEMORY_SUGGESTIONS_SERVISE_PATH)
+public class MemorySuggestionsController {
 
     public static final String MEMORY_SUGGESTIONS_SERVISE_PATH = "/memorizador/suggestions";
 
@@ -24,6 +24,12 @@ public class MemorySuggestions {
     @GetMapping("/{number}")
     public List<MemorySuggestionsDTO> suggest(@PathVariable("number") BigInteger number) {
         return memorySuggestionsService.getSuggestions(number);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{health}")
+    public void health() {
+
     }
 
 

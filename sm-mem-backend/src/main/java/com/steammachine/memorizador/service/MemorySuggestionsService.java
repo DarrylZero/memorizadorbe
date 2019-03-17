@@ -11,6 +11,15 @@ import org.springframework.stereotype.Service;
 public class MemorySuggestionsService {
 
     public List<MemorySuggestionsDTO> getSuggestions(@NonNull BigInteger number) {
+
+
+
         return new ArrayList<>();
     }
+
+    public void reload() {
+
+    }
+
+
 }

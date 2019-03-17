@@ -23,6 +23,7 @@ bootJar {
 
 repositories {
     jcenter()
+    maven { url 'https://clojars.org/repo' }
 }
 
 sourceCompatibility = 1.8
@@ -32,7 +33,13 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.4'
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'io.springfox:springfox-swagger2:2.9.2'
-
+    compile 'org.apache.logging.log4j:log4j-api:2.1'
+    compile 'org.apache.logging.log4j:log4j-core:2.1'
+    compile 'com.steammachine.org:common.utils:1.0.7'
+    
     testCompileOnly 'org.projectlombok:lombok:1.18.4'
     testCompile("junit:junit")
+}
+
+task buildanddeliver(dependsOn : ['build']) {
 }

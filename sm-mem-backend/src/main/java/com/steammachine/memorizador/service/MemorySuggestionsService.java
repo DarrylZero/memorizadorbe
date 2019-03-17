@@ -11,10 +11,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
@@ -23,6 +25,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemorySuggestionsService {
+
+    private static final int MIN_SYMBOLS = 2;
+    private static final int AVARAGE_SYMBOLS = 4;
 
     public static class Word {
 
@@ -33,7 +38,7 @@ public class MemorySuggestionsService {
             this.word = word;
         }
 
-        public List<Character> significantСharacters() {
+        public List<Character> significantChars() {
             if (characters == null) {
                 synchronized (this) {
                     if (characters == null) {
@@ -51,7 +56,7 @@ public class MemorySuggestionsService {
         /*  --------------------------------- privates  --------------------------------------- */
 
         public static List<Character> doGetSignificantCharacters(@NonNull String word) {
-            return Stream.iterate(0, i -> ++i).limit(word.length())
+            return Stream.iterate(0, i -> i + 1).limit(word.length())
                     .map(word::charAt)
                     .filter(NUMBER_MAP::containsValue)
                     .collect(toList());
@@ -80,18 +85,29 @@ public class MemorySuggestionsService {
     private volatile int maxWordLength = 5;
 
 
-    public List<MemorySuggestionsDTO> getSuggestions(@NonNull BigInteger number) {
+    public MemorySuggestionsDTO getSuggestions(@NonNull BigInteger number) {
+
         Map<List<Character>, List<String>> words = this.words;
+        List<Character> chars = getCharacters(number);
 
-        List<Character> characters = getCharacters(number);
+        int wordLength = AVARAGE_SYMBOLS;
 
+        while (wordLength >= MIN_SYMBOLS) {
+            List<List<String>> suggestions = getLists(words, chars, wordLength);
+            boolean emptyMatches = suggestions.stream().anyMatch(Objects::isNull);
+            if (emptyMatches) {
+                wordLength--;
+                continue;
+            }
 
+            return new MemorySuggestionsDTO(suggestions);
+        }
 
-        return new ArrayList<>();
+        return new MemorySuggestionsDTO();
     }
 
     @PostConstruct
-    public void reload() throws IOException {
+    public void reloadDictianaries() throws IOException {
         try (InputStream stream = getClass()
                 .getResourceAsStream("/dictionaries/dictionary1.txt")) {
             doReload(stream);
@@ -99,22 +115,31 @@ public class MemorySuggestionsService {
     }
 
     void doReload(@NonNull InputStream dictionaryData) {
-        HashMap<List<Character>, List<String>> collect = new BufferedReader(
-                new InputStreamReader(dictionaryData)).
+        Map<List<Character>, List<String>> collect = new BufferedReader(
+                new InputStreamReader(dictionaryData, StandardCharsets.UTF_8)).
                 lines()
                 .map(String::toLowerCase)
                 .sorted()
                 .map(this::convert2Word)
-                .filter(w -> !w.significantСharacters().isEmpty())
-                .collect(Collectors.toMap(Word::significantСharacters, word -> singletonList(word.word()),
-                        (s, s2) -> {
-                            List<String> list = new ArrayList<>();
-                            list.addAll(s);
-                            list.addAll(s2);
-                            return list;
-                        }, HashMap::new));
+                .filter(w -> !w.significantChars().isEmpty())
+                .collect(Collectors
+                        .toMap(Word::significantChars, word -> singletonList(word.word()),
+                                (s, s2) -> {
+                                    List<String> list = new ArrayList<>();
+                                    list.addAll(s);
+                                    list.addAll(s2);
+                                    return list;
+                                }, HashMap::new));
 
-        this.maxWordLength = collect.values().stream().mapToInt(List::size).max().orElse(2);
+        this.maxWordLength = collect.values().stream()
+                .filter(e -> e.size() >= MIN_SYMBOLS)
+                .mapToInt(List::size)
+                .max().orElse(MIN_SYMBOLS);
+
+        this.maxWordLength = collect.entrySet().stream()
+                .filter(e -> e.getValue().size() >= MIN_SYMBOLS)
+                .mapToInt(value -> value.getValue().size())
+                .max().orElse(MIN_SYMBOLS);
         this.words = collect;
     }
 
@@ -127,6 +152,18 @@ public class MemorySuggestionsService {
     }
 
     /* ------------------------------------------ privates -----------------------------------  */
+
+    private static List<List<String>> getLists(Map<List<Character>, List<String>> words,
+            List<Character> chars, int wordLength) {
+        List<List<Character>> result = new ArrayList<>();
+        int ind = 0;
+        while (ind < chars.size()) {
+            int nextIndex = chars.size() - ind >= wordLength ? ind + wordLength : chars.size();
+            result.add(chars.subList(ind, nextIndex));
+            ind = nextIndex;
+        }
+        return result.stream().map(words::get).collect(toList());
+    }
 
     private Word convert2Word(String word) {
         return new Word(word);

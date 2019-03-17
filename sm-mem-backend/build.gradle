@@ -33,12 +33,12 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.4'
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'io.springfox:springfox-swagger2:2.9.2'
-    compile 'org.apache.logging.log4j:log4j-api:2.1'
-    compile 'org.apache.logging.log4j:log4j-core:2.1'
     compile 'com.steammachine.org:common.utils:1.0.7'
+//    compile 'com.fasterxml.jackson.core:jackson-databind:2.0.1'
+    compile 'org.springframework.boot:spring-boot-starter-web:2.1.3.RELEASE'
     
     testCompileOnly 'org.projectlombok:lombok:1.18.4'
-    testCompile("junit:junit")
+    testCompile 'junit:junit'
 }
 
 task buildanddeliver(dependsOn : ['build']) {

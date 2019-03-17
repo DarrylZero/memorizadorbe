@@ -1,5 +1,6 @@
 package com.steammachine.memorizador.service;
 
+import com.steammachine.common.utils.commonutils.CommonUtils;
 import com.steammachine.memorizador.dto.MemorySuggestionsDTO;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +13,7 @@ public class MemorySuggestionsServiceReloadAndSearchTest {
     @Test
     public void getReloadTest() throws IOException {
         MemorySuggestionsService memorySuggestionsService = new MemorySuggestionsService();
-        memorySuggestionsService.reload();
+        memorySuggestionsService.reloadDictianaries();
     }
 
     @Test
@@ -32,10 +33,32 @@ public class MemorySuggestionsServiceReloadAndSearchTest {
                 .getResourceAsStream("/dictionaries/dictionary1.txt")) {
             memorySuggestionsService.doReload(stream);
         }
-        List<MemorySuggestionsDTO> suggestions = memorySuggestionsService
+        MemorySuggestionsDTO suggestions = memorySuggestionsService
                 .getSuggestions(BigInteger.valueOf(2128506));
+    }
 
-        suggestions.clear();
+    @Test
+    public void doReloadAndGetSuggestions2() throws IOException {
+        MemorySuggestionsService memorySuggestionsService = new MemorySuggestionsService();
+        try (InputStream stream = getClass()
+                .getResourceAsStream("/dictionaries/dictionary1.txt")) {
+            memorySuggestionsService.doReload(stream);
+        }
+        MemorySuggestionsDTO suggestions = memorySuggestionsService
+                .getSuggestions(BigInteger.valueOf(79213955166L));
+    }
+
+    @Test
+    public void doReloadAndGetSuggestions30() throws IOException {
+        MemorySuggestionsService memorySuggestionsService = new MemorySuggestionsService();
+        try (InputStream stream = getClass()
+                .getResourceAsStream("/dictionaries/dictionary1.txt")) {
+            memorySuggestionsService.doReload(stream);
+        }
+        MemorySuggestionsDTO suggestions = memorySuggestionsService
+                .getSuggestions(new BigInteger("524241018154723"));
+
+
     }
 
 

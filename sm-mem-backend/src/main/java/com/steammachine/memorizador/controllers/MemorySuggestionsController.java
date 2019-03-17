@@ -22,7 +22,7 @@ public class MemorySuggestionsController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/memorizador/suggestions/suggest/{number}")
-    public List<MemorySuggestionsDTO> suggest(@PathVariable("number") BigInteger number) {
+    public MemorySuggestionsDTO suggest(@PathVariable("number") BigInteger number) {
         return memorySuggestionsService.getSuggestions(number);
     }
 

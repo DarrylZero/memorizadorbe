@@ -15,7 +15,7 @@ public class MemorySuggestionsServiceTest {
     @BeforeClass
     public static void beforeClass() throws IOException {
         memorySuggestionsService = new MemorySuggestionsService();
-        memorySuggestionsService.reload();
+        memorySuggestionsService.reloadDictianaries();
     }
 
     @Test

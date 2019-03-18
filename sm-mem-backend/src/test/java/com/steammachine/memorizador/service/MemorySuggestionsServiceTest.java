@@ -1,10 +1,9 @@
 package com.steammachine.memorizador.service;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,18 +18,13 @@ public class MemorySuggestionsServiceTest {
     }
 
     @Test
-    public void getSuggestions() {
-
-
-    }
-
-    @Test
     public void getDataStreamMustWorkProperly() {
-        assertEquals(asList('к','д','л','л','в','т'),
-                memorySuggestionsService.getCharacters(BigInteger.valueOf(192283)));
+        assertEquals(asList('к', 'д', 'л', 'л', 'в', 'т'),
+                memorySuggestionsService.getCharacters("192283"));
+        assertEquals(asList('т', 'л', 'к', 'в', 'п', 'к', 'л', 'в', 'т', 'с', 'ш', 'п', 'к', 'л'),
+                memorySuggestionsService.getCharacters("32185128376512"));
+        assertEquals(asList('н', 'к', 'л', 'т', 'ч', 'п', 'ш', 'с', 'в', 'д'),
+                memorySuggestionsService.getCharacters("0123456789"));
     }
-
-
-
 
 }

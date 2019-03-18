@@ -1,11 +1,14 @@
 package com.steammachine.memorizador.service;
 
-import com.steammachine.common.utils.commonutils.CommonUtils;
+import static java.util.Collections.singletonList;
+import static org.junit.Assert.*;
+
 import com.steammachine.memorizador.dto.MemorySuggestionsDTO;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class MemorySuggestionsServiceReloadAndSearchTest {
@@ -34,7 +37,7 @@ public class MemorySuggestionsServiceReloadAndSearchTest {
             memorySuggestionsService.doReload(stream);
         }
         MemorySuggestionsDTO suggestions = memorySuggestionsService
-                .getSuggestions(BigInteger.valueOf(2128506));
+                .getSuggestions("2128506");
     }
 
     @Test
@@ -45,7 +48,9 @@ public class MemorySuggestionsServiceReloadAndSearchTest {
             memorySuggestionsService.doReload(stream);
         }
         MemorySuggestionsDTO suggestions = memorySuggestionsService
-                .getSuggestions(BigInteger.valueOf(79213955166L));
+                .getSuggestions("79213955166");
+
+
     }
 
     @Test
@@ -56,9 +61,20 @@ public class MemorySuggestionsServiceReloadAndSearchTest {
             memorySuggestionsService.doReload(stream);
         }
         MemorySuggestionsDTO suggestions = memorySuggestionsService
-                .getSuggestions(new BigInteger("524241018154723"));
+                .getSuggestions("524241018154723");
+    }
 
+    @Test
+    public void doReloadMustNotGiveManySameWords() throws IOException {
+        MemorySuggestionsService memorySuggestionsService = new MemorySuggestionsService();
+        try (InputStream stream = getClass()
+                .getResourceAsStream("/dictionaries/test_dict1.txt")) {
+            memorySuggestionsService.doReload(stream);
+        }
+        MemorySuggestionsDTO suggestions = memorySuggestionsService
+                .getSuggestions("5222");
 
+        assertEquals(singletonList(singletonList("параллелограмм")), suggestions.getItems());
     }
 
 

@@ -8,9 +8,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.steammachine.memorizador.dto.MemorySuggestionsDTO;
-import com.steammachine.memorizador.service.MemorySuggestionsService;
-import java.math.BigInteger;
+import com.steammachine.memorizador.dto.MnenonicSuggestionsDTO;
+import com.steammachine.memorizador.service.MnemonicSuggestionsService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,10 +33,10 @@ public class MemorySuggestionsControllerTest {
 
 
     @InjectMocks
-    private MemorySuggestionsController memorySuggestionsController;
+    private MnemonicsController memorySuggestionsController;
 
     @Mock
-    private MemorySuggestionsService memorySuggestionsService;
+    private MnemonicSuggestionsService memorySuggestionsService;
 
 
     @Autowired
@@ -49,7 +48,7 @@ public class MemorySuggestionsControllerTest {
     }
 
     /**
-     * {@link MemorySuggestionsController#health()}
+     * {@link MnemonicsController#health()}
      */
     @Test
     public void testHealthCheckMethodAvailibility() throws Exception {
@@ -60,12 +59,12 @@ public class MemorySuggestionsControllerTest {
     }
 
     /**
-     * {@link MemorySuggestionsController#suggest(String)}
+     * {@link MnemonicsController#suggest(String)}
      */
     @Test
     public void testSuggestMethodAvailability() throws Exception {
         when(memorySuggestionsService.getSuggestions(any(String.class)))
-                .thenReturn(new MemorySuggestionsDTO());
+                .thenReturn(new MnenonicSuggestionsDTO());
         mockMvc.perform(
                 MockMvcRequestBuilders.get(GET_SUGGESTIONS, 3456789)
                         .contentType(MediaType.APPLICATION_JSON_UTF8))

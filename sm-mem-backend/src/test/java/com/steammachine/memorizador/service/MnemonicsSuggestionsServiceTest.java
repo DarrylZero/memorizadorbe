@@ -4,16 +4,17 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class MemorySuggestionsServiceTest {
+public class MnemonicsSuggestionsServiceTest {
 
-    private static MemorySuggestionsService memorySuggestionsService;
+    private static MnemonicSuggestionsService memorySuggestionsService;
 
     @BeforeClass
     public static void beforeClass() throws IOException {
-        memorySuggestionsService = new MemorySuggestionsService();
+        memorySuggestionsService = new MnemonicSuggestionsService();
         memorySuggestionsService.reloadDictianaries();
     }
 
@@ -26,5 +27,16 @@ public class MemorySuggestionsServiceTest {
         assertEquals(asList('н', 'к', 'л', 'т', 'ч', 'п', 'ш', 'с', 'в', 'д'),
                 memorySuggestionsService.getCharacters("0123456789"));
     }
+
+/* ------------------------------------ getNumber ---------------------------------------------- */
+
+    @Test
+    public void getNumber() {
+        assertEquals("335315352552233",
+                memorySuggestionsService.getNumber("от топота копыт пыль по полю летит"));
+        assertEquals("354309279",
+                memorySuggestionsService.getNumber("ты по что боярыню обидел, смерд"));
+    }
+
 
 }

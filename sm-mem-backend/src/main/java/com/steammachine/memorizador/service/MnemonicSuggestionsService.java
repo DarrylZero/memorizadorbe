@@ -7,6 +7,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
+import com.steammachine.memorizador.dto.MnemonicNumberSuggestionDTO;
 import com.steammachine.memorizador.dto.MnemonicSuggestionDTO;
 import com.steammachine.memorizador.dto.MnenonicSuggestionsDTO;
 import java.io.BufferedReader;
@@ -23,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
@@ -150,17 +149,15 @@ public class MnemonicSuggestionsService {
                 .collect(toList());
     }
 
-    public String getNumber(@NonNull String numberString) {
-        return Stream.iterate(0, i -> i + 1)
+    public MnemonicNumberSuggestionDTO suggestNumber(@NonNull String numberString) {
+        return new MnemonicNumberSuggestionDTO(Stream.iterate(0, i -> i + 1)
                 .limit(numberString.length())
                 .map(numberString::charAt)
                 .map(Character::toLowerCase)
                 .filter(CHAR_2_NUMBER::containsKey)
                 .map(CHAR_2_NUMBER::get)
                 .map(c -> "" + c)
-                .collect(joining());
-
-
+                .collect(joining()));
     }
 
 
@@ -193,7 +190,8 @@ public class MnemonicSuggestionsService {
         while (index <= chars.size()) {
             int wordLength = AVERAGE_SYMBOLS;
             while (wordLength >= MIN_SYMBOLS) {
-                Optional<List<String>> aSuggestion = getSliceWords(currentWords, chars, index, wordLength);
+                Optional<List<String>> aSuggestion = getSliceWords(currentWords, chars, index,
+                        wordLength);
                 if (!aSuggestion.isPresent()) {
                     wordLength--;
                 } else {

@@ -3,8 +3,8 @@ package com.steammachine.memorizador.service;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
+import com.steammachine.memorizador.dto.MnemonicNumberSuggestionDTO;
 import java.io.IOException;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -28,14 +28,14 @@ public class MnemonicsSuggestionsServiceTest {
                 memorySuggestionsService.getCharacters("0123456789"));
     }
 
-/* ------------------------------------ getNumber ---------------------------------------------- */
+/* ------------------------------------ suggestNumber ---------------------------------------------- */
 
     @Test
     public void getNumber() {
-        assertEquals("335315352552233",
-                memorySuggestionsService.getNumber("от топота копыт пыль по полю летит"));
-        assertEquals("354309279",
-                memorySuggestionsService.getNumber("ты по что боярыню обидел, смерд"));
+        assertEquals(new MnemonicNumberSuggestionDTO("335315352552233"),
+                memorySuggestionsService.suggestNumber("от топота копыт пыль по полю летит"));
+        assertEquals(new MnemonicNumberSuggestionDTO("354309279"),
+                memorySuggestionsService.suggestNumber("ты по что боярыню обидел, смерд"));
     }
 
 

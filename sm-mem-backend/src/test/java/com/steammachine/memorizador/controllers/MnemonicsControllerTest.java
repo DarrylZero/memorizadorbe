@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.steammachine.memorizador.dto.MnemonicNumberSuggestionDTO;
+import com.steammachine.memorizador.dto.MnemonicNumberSuggestionParam;
 import com.steammachine.memorizador.dto.MnenonicSuggestionsDTO;
 import com.steammachine.memorizador.service.MnemonicSuggestionsService;
 import org.junit.Before;
@@ -20,13 +21,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class MemorySuggestionsControllerTest {
+public class MnemonicsControllerTest {
 
     private static final String MEMORY_SUGGESTIONS_SERVISE_PATH = "/memorizador/suggestions";
     private static final String GET_SUGGESTIONS = MEMORY_SUGGESTIONS_SERVISE_PATH +
@@ -83,7 +84,7 @@ public class MemorySuggestionsControllerTest {
     @Test
     public void testSuggestNumberMethodAvailability() throws Exception {
         when(memorySuggestionsService.suggestNumber(any(String.class)))
-                .thenReturn(new MnemonicNumberSuggestionDTO("21"));
+                .thenReturn(new MnemonicNumberSuggestionDTO("Для", "21"));
         mockMvc.perform(
                 get(SUGGEST_NUMBER)
                         .param("sentence", "привет")
@@ -91,6 +92,26 @@ public class MemorySuggestionsControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         verify(memorySuggestionsService).suggestNumber(eq("привет"));
+    }
+
+    /**
+     * {@link MnemonicsController#suggestNumber(MnemonicNumberSuggestionParam)}
+     */
+    @Test
+    public void testSuggestNumberMethodAvailability2() throws Exception {
+        when(memorySuggestionsService.suggestNumber(any(String.class)))
+                .thenReturn(new MnemonicNumberSuggestionDTO("алхимик", "21"));
+        mockMvc.perform(
+                MockMvcRequestBuilders.post(SUGGEST_NUMBER)
+                        .content("{\n"
+                                + "  \"sentence\" : \"На войне все просто, но самое простое в высшей степени трудно.\"\n"
+                                + "}")
+                        .param("sentence", "привет")
+                        .contentType(APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk());
+        verify(memorySuggestionsService).suggestNumber(
+                eq("На войне все просто, но самое простое в высшей степени трудно."));
     }
 
 

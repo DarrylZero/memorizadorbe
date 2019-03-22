@@ -32,9 +32,11 @@ public class MnemonicsSuggestionsServiceTest {
 
     @Test
     public void getNumber() {
-        assertEquals(new MnemonicNumberSuggestionDTO("335315352552233"),
+        assertEquals(new MnemonicNumberSuggestionDTO("от топота копыт пыль по полю летит",
+                        "335315352552233"),
                 memorySuggestionsService.suggestNumber("от топота копыт пыль по полю летит"));
-        assertEquals(new MnemonicNumberSuggestionDTO("354309279"),
+        assertEquals(
+                new MnemonicNumberSuggestionDTO("ты по что боярыню обидел, смерд", "354309279"),
                 memorySuggestionsService.suggestNumber("ты по что боярыню обидел, смерд"));
     }
 

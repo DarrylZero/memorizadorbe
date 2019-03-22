@@ -150,7 +150,7 @@ public class MnemonicSuggestionsService {
     }
 
     public MnemonicNumberSuggestionDTO suggestNumber(@NonNull String numberString) {
-        return new MnemonicNumberSuggestionDTO(Stream.iterate(0, i -> i + 1)
+        return new MnemonicNumberSuggestionDTO(numberString, Stream.iterate(0, i -> i + 1)
                 .limit(numberString.length())
                 .map(numberString::charAt)
                 .map(Character::toLowerCase)

@@ -10,11 +10,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemorySuggestionsDTO {
+public class MnemonicNumberSuggestionDTO {
 
-    @JsonProperty("items")
-    private List<List<String>> items = new ArrayList<>();
+    @JsonProperty("sentence")
+    private String sentence;
 
-
+    @JsonProperty("number")
+    private String number;
 
 }

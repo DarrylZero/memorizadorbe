@@ -2,8 +2,10 @@ package com.steammachine.memorizador.service;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import com.steammachine.memorizador.dto.MnemonicNumberSuggestionDTO;
+import com.steammachine.memorizador.dto.CheckSentenceDto;
 import java.io.IOException;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,17 +30,32 @@ public class MnemonicsSuggestionsServiceTest {
                 memorySuggestionsService.getCharacters("0123456789"));
     }
 
-/* ------------------------------------ suggestNumber ---------------------------------------------- */
+/* ------------------------------------ suggestNumber ------------------------------------------- */
 
     @Test
     public void getNumber() {
-        assertEquals(new MnemonicNumberSuggestionDTO("от топота копыт пыль по полю летит",
+        assertEquals(new CheckSentenceDto("от топота копыт пыль по полю летит",
                         "335315352552233"),
                 memorySuggestionsService.suggestNumber("от топота копыт пыль по полю летит"));
         assertEquals(
-                new MnemonicNumberSuggestionDTO("ты по что боярыню обидел, смерд", "354309279"),
+                new CheckSentenceDto("ты по что боярыню обидел, смерд", "354309279"),
                 memorySuggestionsService.suggestNumber("ты по что боярыню обидел, смерд"));
     }
+
+/*  ----------------------------------- checkSentence -----------------------------------------  */
+
+    @Test
+    public void checkSentenceMustReturnCorrectValues() {
+        assertTrue(memorySuggestionsService
+                .checkSentence("79212955165", "седёлка углерод пупок шприц"));
+
+        assertTrue(memorySuggestionsService
+                .checkSentence("79212955165", "И седёлку углеродом и пупок шприцем"));
+
+        assertFalse(memorySuggestionsService
+                .checkSentence("79212955165", "И седёлку с углеродом и в пупок шприцем"));
+    }
+
 
 
 }

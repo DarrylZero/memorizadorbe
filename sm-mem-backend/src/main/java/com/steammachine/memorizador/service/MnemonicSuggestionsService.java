@@ -7,9 +7,9 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-import com.steammachine.memorizador.dto.MnemonicNumberSuggestionDTO;
-import com.steammachine.memorizador.dto.MnemonicSuggestionDTO;
-import com.steammachine.memorizador.dto.MnenonicSuggestionsDTO;
+import com.steammachine.memorizador.dto.CheckSentenceDto;
+import com.steammachine.memorizador.dto.MnemonicSuggestionDto;
+import com.steammachine.memorizador.dto.MnenonicSuggestionsDto;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -116,11 +116,11 @@ public class MnemonicSuggestionsService {
 
     private volatile Map<List<Character>, List<String>> words = new HashMap<>();
 
-    public MnenonicSuggestionsDTO getSuggestions(@NonNull String number) {
+    public MnenonicSuggestionsDto getSuggestions(@NonNull String number) {
         Map<List<Character>, List<String>> currentWords = this.words;
         List<Character> chars = getCharacters(number);
 
-        MnenonicSuggestionsDTO collection = new MnenonicSuggestionsDTO();
+        MnenonicSuggestionsDto collection = new MnenonicSuggestionsDto();
         collection.setNumber(number);
 
         asLongAsPossible(currentWords, chars)
@@ -149,22 +149,30 @@ public class MnemonicSuggestionsService {
                 .collect(toList());
     }
 
-    public MnemonicNumberSuggestionDTO suggestNumber(@NonNull String numberString) {
-        return new MnemonicNumberSuggestionDTO(numberString, Stream.iterate(0, i -> i + 1)
+    public CheckSentenceDto suggestNumber(@NonNull String numberString) {
+        return new CheckSentenceDto(numberString, getSuggestedNumber(numberString));
+    }
+
+    public boolean checkSentence (
+            @NonNull String numberString,
+            @NonNull String sentence) {
+        return Objects.equals(getSuggestedNumber(sentence), numberString);
+    }
+
+    /* ------------------------------------------ privates -----------------------------------  */
+
+    private String getSuggestedNumber(@NonNull String numberString) {
+        return Stream.iterate(0, i -> i + 1)
                 .limit(numberString.length())
                 .map(numberString::charAt)
                 .map(Character::toLowerCase)
                 .filter(CHAR_2_NUMBER::containsKey)
                 .map(CHAR_2_NUMBER::get)
                 .map(c -> "" + c)
-                .collect(joining()));
+                .collect(joining());
     }
 
-
-    /* ------------------------------------------ privates -----------------------------------  */
-
-
-    private Optional<MnemonicSuggestionDTO> getShortSuggestion(
+    private Optional<MnemonicSuggestionDto> getShortSuggestion(
             Map<List<Character>, List<String>> currentWords,
             List<Character> chars) {
 
@@ -176,12 +184,12 @@ public class MnemonicSuggestionsService {
                 wordLength--;
                 continue;
             }
-            return Optional.of(new MnemonicSuggestionDTO(suggestions));
+            return Optional.of(new MnemonicSuggestionDto(suggestions));
         }
         return Optional.empty();
     }
 
-    private Optional<MnemonicSuggestionDTO> asLongAsPossible(
+    private Optional<MnemonicSuggestionDto> asLongAsPossible(
             Map<List<Character>, List<String>> currentWords,
             List<Character> chars) {
 
@@ -201,7 +209,7 @@ public class MnemonicSuggestionsService {
                 }
             }
         }
-        return Optional.of(new MnemonicSuggestionDTO(suggestions));
+        return Optional.of(new MnemonicSuggestionDto(suggestions));
     }
 
     void doReload(@NonNull InputStream dictionaryData) {

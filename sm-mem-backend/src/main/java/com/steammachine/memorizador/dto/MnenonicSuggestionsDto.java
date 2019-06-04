@@ -6,19 +6,17 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.bytebuddy.asm.Advice.AllArguments;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MnenonicSuggestionsDTO {
+public class MnenonicSuggestionsDto {
 
     @JsonProperty("number")
     private String number;
 
 
     @JsonProperty("suggestions")
-    private List<MnemonicSuggestionDTO> suggestions = new ArrayList<>();
+    private List<MnemonicSuggestionDto> suggestions = new ArrayList<>();
 
 }

@@ -54,7 +54,7 @@ public class MnemonicsController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/check")
+    @PostMapping("/check")
     CheckSentenceResultDto checkSentence(@RequestBody CheckSentenceDto checkSentenceDto) {
         return new CheckSentenceResultDto(
                 memorySuggestionsService.checkSentence(checkSentenceDto.getNumber(),

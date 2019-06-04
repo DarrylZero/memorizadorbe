@@ -8,8 +8,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -18,7 +18,6 @@ import com.steammachine.memorizador.dto.CheckSentenceDto;
 import com.steammachine.memorizador.dto.MnemonicNumberSuggestionParam;
 import com.steammachine.memorizador.dto.MnenonicSuggestionsDto;
 import com.steammachine.memorizador.service.MnemonicSuggestionsService;
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,9 +26,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
@@ -126,15 +122,14 @@ public class MnemonicsControllerTest {
     @Test
     public void testcheckSentenceMethodAvailability() throws Exception {
         when(memorySuggestionsService.checkSentence(anyString(), anyString())).thenCallRealMethod();
-        mockMvc.perform(
-                get(CHECK_SENTENCE)
+        mockMvc.perform(post(CHECK_SENTENCE)
                         .content("{ \"sentence\" : \"седёлка углерод пупок шприц\", "
                                 + "\"number\": \"79212955165\" }")
                         .contentType(APPLICATION_JSON_UTF8))
                 .andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result").exists())
-                .andExpect(jsonPath("$.result", equalTo(true)))
-                .andExpect(status().isOk());
+                .andExpect(jsonPath("$.result", equalTo(true)));
 
         verify(memorySuggestionsService).checkSentence(anyString(), anyString());
     }
@@ -142,15 +137,14 @@ public class MnemonicsControllerTest {
     @Test
     public void testcheckSentenceMethodAvailability2() throws Exception {
         when(memorySuggestionsService.checkSentence(anyString(), anyString())).thenCallRealMethod();
-        mockMvc.perform(
-                get(CHECK_SENTENCE)
-                        .content("{ \"sentence\" : \"нормаль седёлка углерод пупок шприц\", "
-                                + "\"number\": \"0279212955165\" }")
-                        .contentType(APPLICATION_JSON_UTF8))
+        mockMvc.perform(post(CHECK_SENTENCE)
+                .content("{ \"sentence\" : \"нормаль седёлка углерод пупок шприц\", "
+                        + "\"number\": \"0279212955165\" }")
+                .contentType(APPLICATION_JSON_UTF8))
                 .andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result").exists())
-                .andExpect(jsonPath("$.result", equalTo(true)))
-                .andExpect(status().isOk());
+                .andExpect(jsonPath("$.result", equalTo(true)));
 
         verify(memorySuggestionsService).checkSentence(anyString(), anyString());
     }

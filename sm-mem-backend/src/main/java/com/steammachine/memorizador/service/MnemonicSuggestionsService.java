@@ -129,6 +129,9 @@ public class MnemonicSuggestionsService {
         getShortSuggestion(currentWords, chars)
                 .ifPresent(suggestions -> collection.getSuggestions().add(suggestions));
 
+        getTwoLettersSuggestion(currentWords, chars)
+                .ifPresent(suggestions -> collection.getSuggestions().add(suggestions));
+
         return collection;
     }
 
@@ -177,6 +180,23 @@ public class MnemonicSuggestionsService {
             List<Character> chars) {
 
         int wordLength = AVERAGE_SYMBOLS;
+        while (wordLength >= MIN_SYMBOLS) {
+            List<List<String>> suggestions = getLists(currentWords, chars, wordLength);
+            boolean emptyMatches = suggestions.stream().anyMatch(Objects::isNull);
+            if (emptyMatches) {
+                wordLength--;
+                continue;
+            }
+            return Optional.of(new MnemonicSuggestionDto(suggestions));
+        }
+        return Optional.empty();
+    }
+
+    private Optional<MnemonicSuggestionDto> getTwoLettersSuggestion(
+            Map<List<Character>, List<String>> currentWords,
+            List<Character> chars) {
+
+        int wordLength = MIN_SYMBOLS;
         while (wordLength >= MIN_SYMBOLS) {
             List<List<String>> suggestions = getLists(currentWords, chars, wordLength);
             boolean emptyMatches = suggestions.stream().anyMatch(Objects::isNull);
